@@ -1,8 +1,7 @@
 #pragma once
 #include "structures.h"
-/*******************************************MICROSOFT_QUESTIONS******************************************/
-/********************************************FIND_WORD_IN_MATRIX*****************************************/
-/*CONTAINS BUG CHECK FOR PROBLEM*/
+/*******************************************MICROSOFT_QUESTIONS*******************************************************/
+/********************************************FIND_WORD_IN_MATRIX******************************************************/
 #ifndef CHAR_MTR_COL
 #define CHAR_MTR_COL 5
 #endif
@@ -11,81 +10,58 @@
 #define CHAR_MTR_ROW 5
 #endif
 
-bool findWordInMatrix(char matrix[CHAR_MTR_ROW][CHAR_MTR_COL], std::string word) {
-	std::unordered_map<char, int> word_characters;
+//Dý
+bool isInMatrix(int row, int col) {
+	return row >= 0 && col >= 0 && row < CHAR_MTR_ROW && col <= CHAR_MTR_COL;
+}
 
-	for (int i = 0; i < word.size(); i++) {
-		word_characters[word[i]] = i;
-	}
-	bool found = false;
+//First Char Found Check Directions
+bool scanForWord(char matrix[CHAR_MTR_ROW][CHAR_MTR_COL], std::string word, int row, int col) {
+	for (int n_row = -1; n_row <= 1; n_row++) {
+		for (int n_col = -1; n_col <= 1; n_col++) {
+			//Just Look 4 Directions
+			if ((n_row == 0 || n_col == 0 ) && (n_row != n_col)) {
 
-	for (int row = 0; row < CHAR_MTR_ROW; row++) {
-		for (int col = 0; col < CHAR_MTR_COL; col++) {
-			//String in char found
-			if (word_characters.count(matrix[row][col])) {
-				int found_char_index = word_characters[matrix[row][col]];
-				
-				int curr_row = row - 1;
-				int curr_col = col - 1;
-
-				int left_char_index = (word_characters[matrix[row][col]] != 0) ? word_characters[matrix[row][col]] - 1: 0;
-				int right_char_index =
-					(word_characters[matrix[row][col]] != word.size() + 1) ? word_characters[matrix[row][col]] + 1: word.size() - 1;
-				
-				//Check Horizontally
-				
-				//Check Left Part
-				while (left_char_index > 0 && curr_col > 0 && matrix[row][curr_col] == word[left_char_index] ) {
-					left_char_index--;
-					curr_col--;
+				int cur_row = row + n_row;
+				int cur_col = col + n_col;
+				int i = 1;
+				//Check Untill Then End Of String
+				for (i = 1; i < word.size(); i++) {
+					if (isInMatrix(cur_row, cur_col)) {
+						if (word[i] == matrix[cur_row][cur_col]) {
+							cur_row += n_row;
+							cur_col += n_col;
+						}
+						else {
+							break;
+						}
+					}
+					else {
+						break;
+					}
 				}
 
-				curr_col = col + 1;
-				
-
-				//Check Right Part
-				while (right_char_index < word.size() && curr_col < CHAR_MTR_COL  && matrix[row][curr_col] == word[right_char_index]) {
-					right_char_index++;
-					curr_col++;
+				if (i == word.size()) {
+					return true;
 				}
-
-				if (right_char_index == word.size() - 1 && left_char_index == 0) {
-					found = true;
-					break;
-				}
-
-				left_char_index = (word_characters[matrix[row][col]] != 0) ? word_characters[matrix[row][col]] - 1 : 0;
-				right_char_index =
-					(word_characters[matrix[row][col]] != word.size() + 1) ? word_characters[matrix[row][col]] + 1 : word.size() - 1;
-				
-				//Check Vertically
-				//Check Left Part
-				while (left_char_index > 0 && curr_row > 0 && matrix[curr_row][col] == word[left_char_index]) {
-					left_char_index--;
-					curr_row--;
-				}
-
-				curr_row = row + 1;
-
-				//Check Right Part
-				while (right_char_index < word.size() && curr_row < CHAR_MTR_ROW  && matrix[curr_row][col] == word[right_char_index]) {
-					right_char_index++;
-					curr_row ++;
-				}
-
-				if (right_char_index == word.size() - 1 && left_char_index == 0) {
-					found = true;
-					break;
-				}
-
-				col = curr_col;
 			}
 		}
-		if (found) {
-			break;
+	}
+
+	return false;
+}
+
+bool findWordInMatrix(char matrix[CHAR_MTR_ROW][CHAR_MTR_COL], std::string word) {
+	for (int row = 0; row < CHAR_MTR_ROW; row++) {
+		for (int col = 0; col < CHAR_MTR_COL; col++) {
+			//Head Char Found
+			if (matrix[row][col] == word[0]) {
+				if (scanForWord(matrix, word, row, col))
+					return true;
+			}
 		}
 	}
 
-	return found;
+	return false;
 }
-/********************************************FIND_WORD_IN_MATRIX*****************************************/
+/********************************************FIND_WORD_IN_MATRIX******************************************************/

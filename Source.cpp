@@ -14,8 +14,9 @@ int main(void) {
 												{ 'M', 'A', 'S', 'S' }
 											  };
 	
-	std::string s = "FOAM";
-	std::cout << "string : " << s << " result : " << findWordInMatrix(matrix, s) << std::endl;
+	std::string s = "CQOS";
+	std::string res = findWordInMatrix(matrix, s) ? "found" : "not found";
+	std::cout << " The string : " << s << " " <<  res << " in matrix!" << std::endl;
 	/*
 	std::vector<std::vector<int>> matrix = generateZeroMatrix(MTR_SIZE, MTR_SIZE);
 	int way_count = count_ways(matrix, 0, 0);
