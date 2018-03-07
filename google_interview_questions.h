@@ -328,3 +328,45 @@ uint64_t normal_pow(uint64_t x, uint64_t y) {
 	return sol;
 }
 /*************************************************EFFICIENT_POW*************************************************************************/
+/*************************************************KNIGHTS_TOUR**************************************************************************/
+#ifndef CHESS_EDGE
+#define CHESS_EDGE 5
+#endif
+
+bool isInMap(int row, int col) {
+	return row < CHESS_EDGE && col < CHESS_EDGE && row >= 0 && col >= 0;
+}
+
+bool isNotVisited(int row, int col, int matrix[CHESS_EDGE][CHESS_EDGE]) {
+	return matrix[row][col] == -1;
+}
+
+bool isAvailable(int row, int col, int matrix[CHESS_EDGE][CHESS_EDGE]) {
+	return isInMap(row, col) && isNotVisited(row, col, matrix);
+}
+
+bool knights_tour(int matrix[CHESS_EDGE][CHESS_EDGE], int row, int col, int step, int row_ch[CHESS_EDGE], int col_ch[CHESS_EDGE]) {
+	if (step == (CHESS_EDGE * CHESS_EDGE)) {
+		return true;
+	}
+	for (int i = 0; i < 8; i++) {
+		int next_row = row + row_ch[i];
+		int next_col = col + col_ch[i];
+
+		if (isAvailable(next_row, next_col, matrix)) {
+
+			matrix[next_row][next_col] = step;
+			if (knights_tour(matrix, next_row, next_col, step + 1, row_ch, col_ch) == true) {
+				return true;
+			}
+			else {
+				matrix[next_row][next_col] = -1;
+			}
+		}
+	}
+	
+	
+	return false;
+
+}
+/*************************************************KNIGHTS_TOUR**************************************************************************/

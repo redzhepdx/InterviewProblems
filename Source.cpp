@@ -6,7 +6,35 @@
 
 
 int main(void) {
+	
+	int chessBoard[CHESS_EDGE][CHESS_EDGE];
+	for (int i = 0; i < CHESS_EDGE; i++) {
+		for (int j = 0; j < CHESS_EDGE; j++) {
+			chessBoard[i][j] = -1;
+		}
+	}
 
+
+	int row_ch[8] = { -2, -1, 1, 2, 2, 1, -1, -2 };
+	int col_ch[8] = { -1, -2, -2, -1 , 1, 2, 2, 1 };
+
+
+	int step = 0;
+	chessBoard[0][0] = 0;
+	bool res = knights_tour(chessBoard, 0, 0, 1, row_ch, col_ch);
+	if (res) {
+		for (int i = 0; i < CHESS_EDGE; i++) {
+			for (int j = 0; j < CHESS_EDGE; j++) {
+				std::cout << chessBoard[i][j] << " ";
+			}
+			std::cout << std::endl;
+		}
+	}
+	else {
+		std::cout << "There is no path" << std::endl;
+	}
+
+	/*
 	char matrix[CHAR_MTR_ROW][CHAR_MTR_COL] = { 
 												{ 'F', 'A', 'C', 'I' },
 												{ 'O', 'B', 'Q', 'P' },
@@ -17,7 +45,7 @@ int main(void) {
 	std::string s = "CQOS";
 	std::string res = findWordInMatrix(matrix, s) ? "found" : "not found";
 	std::cout << " The string : " << s << " " <<  res << " in matrix!" << std::endl;
-	/*
+	
 	std::vector<std::vector<int>> matrix = generateZeroMatrix(MTR_SIZE, MTR_SIZE);
 	int way_count = count_ways(matrix, 0, 0);
 	std::cout << "Total Path Count : " << way_count << std::endl;
