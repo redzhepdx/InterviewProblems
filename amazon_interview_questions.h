@@ -63,3 +63,75 @@ int ExpressionTree::computeSubTree(exp_node *node, int left_value, int right_val
 	return 0;
 }
 /*************************************************EXPRESSION_TREE_RESULT****************************************************************/
+
+/************************************************SPIRAL_TRAVERSING_MATRIX***************************************************************/
+#ifndef SPIRAL_MATRIX_COL
+#define SPIRAL_MATRIX_COL 8
+#endif
+
+#ifndef SPIRAL_MATRIX_ROW
+#define SPIRAL_MATRIX_ROW 7
+#endif
+
+void spiral_traverse_matrix(int matrix[SPIRAL_MATRIX_ROW][SPIRAL_MATRIX_COL]) {
+	int step = 0;
+	int curr_row = 0;
+	int curr_col = 0;
+	//matrix[curr_row][curr_col] = 0;
+	while (step < (SPIRAL_MATRIX_COL * SPIRAL_MATRIX_ROW - 1)) {
+		//Go Left As Much As You Can
+		while (curr_col < SPIRAL_MATRIX_COL - 1 && matrix[curr_row][curr_col] != 0) {
+			std::cout << matrix[curr_row][curr_col] << " ";
+			matrix[curr_row][curr_col] = 0;
+			curr_col++;
+			step++;
+			if (matrix[curr_row][curr_col] == 0) {
+				curr_col--;
+				curr_row++;
+				break;
+			}
+		}
+		//Go Down As Much As You Can
+		while (curr_row < SPIRAL_MATRIX_ROW - 1 && matrix[curr_row][curr_col] != 0) {
+			std::cout << matrix[curr_row][curr_col] << " ";
+			matrix[curr_row][curr_col] = 0;
+			curr_row++;
+			step++;
+			if (matrix[curr_row][curr_col] == 0) {
+				curr_row--;
+				curr_col--;
+				break;
+			}
+		}
+
+
+		//Go Righ As Much As You Can
+		while (curr_col > 0 && matrix[curr_row][curr_col] != 0) {
+			std::cout << matrix[curr_row][curr_col] << " ";
+			matrix[curr_row][curr_col] = 0;
+			curr_col--;
+			step++;
+			if (matrix[curr_row][curr_col] == 0) {
+				curr_col++;
+				curr_row--;
+				break;
+			}
+		}
+		//Go Top As Much As You Can
+		while (curr_row > 0 && matrix[curr_row][curr_col] != 0) {
+			std::cout << matrix[curr_row][curr_col] << " ";
+			matrix[curr_row][curr_col] = 0;
+			curr_row--;
+			step++;
+			if (matrix[curr_row][curr_col] == 0) {
+				curr_row++;
+				curr_col++;
+				break;
+			}
+		}
+
+	}
+}
+
+
+/************************************************SPIRAL_TRAVERSING_MATRIX***************************************************************/
