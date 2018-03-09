@@ -6,7 +6,20 @@
 
 
 int main(void) {
-	
+	int matrix[SPIRAL_MATRIX_ROW][SPIRAL_MATRIX_COL];
+
+	for (int i = 0; i < SPIRAL_MATRIX_ROW; i++) {
+		for (int j = 0; j < SPIRAL_MATRIX_COL; j++) {
+			matrix[i][j] = i * SPIRAL_MATRIX_COL + j + 1;
+			std::cout << matrix[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << "Algorithm " << std::endl;
+
+	spiral_traverse_matrix(matrix);
+	/*
 	int chessBoard[CHESS_EDGE][CHESS_EDGE];
 	for (int i = 0; i < CHESS_EDGE; i++) {
 		for (int j = 0; j < CHESS_EDGE; j++) {
@@ -34,7 +47,7 @@ int main(void) {
 		std::cout << "There is no path" << std::endl;
 	}
 
-	/*
+	
 	char matrix[CHAR_MTR_ROW][CHAR_MTR_COL] = { 
 												{ 'F', 'A', 'C', 'I' },
 												{ 'O', 'B', 'Q', 'P' },
