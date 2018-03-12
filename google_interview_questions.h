@@ -370,3 +370,82 @@ bool knights_tour(int matrix[CHESS_EDGE][CHESS_EDGE], int row, int col, int step
 
 }
 /*************************************************KNIGHTS_TOUR**************************************************************************/
+
+/****************************************TREATINING_BISHOP*******************************/
+int count_threatining_bishop(int chess_board[CHESS_SIZE][CHESS_SIZE]){
+	//Scan Board 2 Crossed Diagonally
+	int row        = 0;
+	int col        = 0;
+	int pair_count = 0;
+	//Bottom-Left & Top-Right Diagonals
+	for(int i = 0; i < CHESS_SIZE; i++){
+		int diagonal_count = 0;
+		std::pair<int, int> d_pos(row + i, col);
+		while(isInRange(d_pos)){
+			if(chess_board[d_pos.first][d_pos.second] == 1){
+				diagonal_count += 1;
+			}
+			d_pos.first  -= 1;
+			d_pos.second += 1;
+		}
+		if(diagonal_count >= 1){
+			pair_count += (diagonal_count - 1);
+		}
+	}
+
+	row = CHESS_SIZE - 1;
+	col = 0;
+	for(int i = 1; i < CHESS_SIZE; i++){
+        int diagonal_count = 0;
+        std::pair<int, int> d_pos(row, col + i);
+        while(isInRange(d_pos)){
+	    if(chess_board[d_pos.first][d_pos.second] == 1){
+                diagonal_count += 1;
+            }
+            d_pos.first  -= 1;
+            d_pos.second += 1;
+        }
+        if(diagonal_count >= 1){
+            pair_count += (diagonal_count - 1);
+        }
+    }
+
+	row = 0;
+	col = CHESS_SIZE - 1;
+
+	//Bottom-Right & Top-Left Diagonals
+	for(int i = 0; i < CHESS_SIZE; i++){
+        int diagonal_count = 0;
+        std::pair<int, int> d_pos(row, col - i);
+        while(isInRange(d_pos)){
+            if(chess_board[d_pos.first][d_pos.second] == 1){
+                diagonal_count += 1;
+            }
+            d_pos.first  += 1;
+            d_pos.second += 1;
+        }
+        if(diagonal_count >= 1){
+            pair_count += (diagonal_count - 1);
+        }
+    }
+
+	col = 0;
+
+    for(int i = 1; i < CHESS_SIZE; i++){
+        int diagonal_count = 0;
+        std::pair<int, int> d_pos(row + i, col);
+        while(isInRange(d_pos)){
+            if(chess_board[d_pos.first][d_pos.second] == 1){
+                diagonal_count += 1;
+            }
+            d_pos.first  += 1;
+            d_pos.second += 1;
+        }
+        if(diagonal_count >= 1){
+            pair_count += (diagonal_count - 1);
+        }
+    }
+	
+	return pair_count;
+}
+/****************************************TREATINING_BISHOP*******************************/
