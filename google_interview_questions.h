@@ -449,3 +449,179 @@ int count_threatining_bishop(int chess_board[CHESS_SIZE][CHESS_SIZE]){
 	return pair_count;
 }
 /****************************************TREATINING_BISHOP*******************************/
+/*************************************************LRU-LFU-CACHE*************************************************************************/
+/*
+  LRU CACHE
+  Double Linked List and Hashing Applied
+
+  Double Linked List : Deque
+  Hash Map           : Unordered_Map
+  from STL
+  O(1) time space add and get
+*/
+
+class Cache {
+public:
+	virtual void set(int key, int value);
+	virtual int get(int key);
+	virtual void print_content();
+};
+
+class LRUCache : public Cache {
+public:
+	LRUCache(int max_size) {
+		this->max_size = max_size;
+	}
+
+	~LRUCache() {
+		delete this;
+	}
+
+	void set(int key, int value);
+	int get(int key);
+	void print_content();
+	
+
+private:
+	std::unordered_map<int, int> map;
+	std::deque<int> q;
+	int size = 0;
+	int max_size;
+};
+
+void LRUCache::set(int key, int value) {
+	//Add directly
+	if (this->size < this->max_size) {
+		this->map[key] = value;//Add To Hash Map
+		this->q.push_front(key);//Add To Front
+		this->size++;//Increase Page Size
+	}
+	//Delete LRU and Add Element
+	else if (this->size == this->max_size) {
+		//Delete LRU Element
+		int lru_element = this->q.back();
+		this->q.pop_back(); //Delete From Linked List
+		map.erase(lru_element); //Delete From Hast Map
+
+		//Add New Element
+		this->map[key] = value;//Add to Hash Map
+		this->q.push_front(key);//Add To Front
+	}
+}
+
+int LRUCache::get(int key) {
+	if (map.count(key)) {
+		return map[key];
+	}
+	return 0;
+}
+
+void LRUCache::print_content() {
+	std::cout << "LRU : ";
+	for (int i : this->q) {
+		std::cout << this->map[i] << " ";
+	}
+	std::cout << std::endl;
+}
+
+/*
+(Not Finished Need to Update)
+LFU CACHE
+Double Linked List and Hashing Applied
+
+Double Linked List : Deque
+Hash Map           : Unordered_Map
+from STL
+O(1) time space add and get
+*/
+
+class LFUCache : public Cache {
+public:
+	LFUCache(int max_size) {
+		this->max_size = max_size;
+	}
+
+	~LFUCache() {
+		delete this;
+	}
+
+	void set(int key, int value);
+	int get(int key);
+	void print_content();
+
+
+private:
+	std::unordered_map<int, int> map;
+	std::deque<int> q;
+	int size = 0;
+	int max_size;
+};
+
+void LFUCache::set(int key, int value) {
+	//Add directly
+	if (this->size < this->max_size) {
+		this->map[key] = value;//Add To Hash Map
+		this->q.push_back(key);//Add To Front
+		this->size++;//Increase Page Size
+	}
+	//Delete LFU and Add Element
+	else if (this->size == this->max_size) {
+		//Delete LFU Element
+		int lfu_element = this->q.front();
+		this->q.pop_front(); //Delete From Linked List
+		map.erase(lfu_element); //Delete From Hast Map
+
+								//Add New Element
+		this->map[key] = value;//Add to Hash Map
+		this->q.push_front(key);//Add To Front
+	}
+}
+
+int LFUCache::get(int key) {
+	if (map.count(key)) {
+		return map[key];
+	}
+	return 0;
+}
+
+void LFUCache::print_content() {
+	std::cout << "LFU : ";
+	for (int i : this->q) {
+		std::cout << this->map[i] << " ";
+	}
+	std::cout << std::endl;
+}
+
+/*************************************************LRU-LFU-CACHE*************************************************************************/
+
+/***********************************************REVERSED_LINKED_LIST********************************************************************/
+Node * reverse_it_in_place(Node * head) {
+	Node * first  = head;
+	Node * second = head->next;
+
+	if (!second) {
+		return first;
+	}
+
+	Node * third  = head->next->next;
+
+	if (!third) {
+		second->next = first;
+		first->next = NULL;
+		return second;
+	}
+	else {
+		first->next = NULL;
+		while (third->next) {
+			second->next = first;
+			first = second;
+			second = third;
+			third = third->next;
+		}
+		third->next = second;
+		second->next = first;
+	}
+
+	return third;
+}
+/***********************************************REVERSED_LINKED_LIST********************************************************************/
