@@ -135,3 +135,27 @@ void spiral_traverse_matrix(int matrix[SPIRAL_MATRIX_ROW][SPIRAL_MATRIX_COL]) {
 
 
 /************************************************SPIRAL_TRAVERSING_MATRIX***************************************************************/
+/************************************************FIND_NUM_IN_MULT_MATRIX****************************************************************/
+int find_number_in_mult_matrix(int N, int X) {
+	int limit = (X / 2 < N) ? X / 2 : N;
+
+	if (X < N) {
+		limit = (X / 2 < N) ? N : X / 2;
+	}
+
+	int count = 0;
+
+	for (int i = 1; i <= limit; i++) {
+		if (X % i == 0 && X / i <= limit && i <= X / i) {
+			if ((i*i) != X) {
+				count += 2;
+			}
+			else {
+				count++;
+			}
+		}
+	}
+
+	return count;
+}
+/************************************************FIND_NUM_IN_MULT_MATRIX****************************************************************/
