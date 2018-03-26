@@ -10,7 +10,7 @@
 #define CHAR_MTR_ROW 5
 #endif
 
-//Dý
+//DÃ½
 bool isInMatrix(int row, int col) {
 	return row >= 0 && col >= 0 && row < CHAR_MTR_ROW && col <= CHAR_MTR_COL;
 }
@@ -65,3 +65,43 @@ bool findWordInMatrix(char matrix[CHAR_MTR_ROW][CHAR_MTR_COL], std::string word)
 	return false;
 }
 /********************************************FIND_WORD_IN_MATRIX******************************************************/
+/***************************************LONGEST_INCREASING_SUBSEQUENCE************************************************/
+/*
+SAMPLE : 
+[0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15]
+length: 6
+subset : [0, 2, 6, 9, 11, 15]
+*/
+
+template<typename T>
+int find_longest_increasing_subsequence_length(std::vector<T> list) {
+	
+	int length = 1;
+	std::vector<T> tail(list.size());
+
+	if (list.size() == 0) {
+		return 0;
+	}
+
+	//Atleast it will contain one element in every sub sequence
+	tail[0] = list[0];
+
+	for (int i = 1; i < list.size(); i++) {
+		//New Smallest value
+		if (list[i] <= tail[0]) {
+			tail[0] = list[i];
+		}
+		else if (list[i] > tail[length - 1]) {
+			//Largest Sequence Size and end of this sequence
+			//extend sequence length
+			tail[length] = list[i];
+			length++;
+		}
+		else {
+			//if it is member of any sub sequence , add it and delete upper bound , for the track more long sequence
+			tail[find_upper_bound(tail, 0, length - 1, list[i])] = list[i];
+		}
+	}
+	return length;
+}
+/***************************************LONGEST_INCREASING_SUBSEQUENCE************************************************/
