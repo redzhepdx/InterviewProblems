@@ -6,6 +6,67 @@
 
 
 int main(void) {
+	int array[] = { 0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15 };
+	std::vector<int> list;
+	std::vector<int> curr_list;
+	initialize_vector(list, array, 16);
+	//std::cout << list.size() << std::endl;
+	int longest_sequence_len = find_longest_increasing_subsequence_length(list);
+	std::cout << "longest sub sequence length : " << longest_sequence_len << std::endl;
+	/*
+	int N = 12, X = 12;
+	int counter = find_number_in_mult_matrix(N, X);
+	std::cout << X << " appears in matrix for " << counter << " times." << std::endl;
+	
+	Node* n1 = new Node('a');
+	Node* n2 = new Node('b');
+	Node* n3 = new Node('c');
+	Node* n4 = new Node('d');
+	Node* n5 = new Node('e');
+	Node* n6 = new Node('f');
+	Node* n7 = new Node('g');
+
+	n1->next = n2;
+	
+	n2->next = n3;
+	
+	n3->next = n4;
+	n4->next = n5;
+	n5->next = n6;
+	n6->next = n7;
+
+	Node * new_head = reverse_it_in_place(n1);
+	std::cout << new_head->data;
+	while (new_head->next) {
+		new_head = new_head->next;
+		std::cout << "->" << new_head->data;
+	}
+	std::cout << std::endl;
+
+	
+	std::vector<int> list;
+	for (int i = 0; i < 500; i++) {
+		list.push_back(i * 10);
+	}
+	int max_val = find_max_triangle_multiplication(list, 0, 1, 0);
+	std::cout << "Max Multiplication Value : " << max_val << std::endl;
+	
+	LRUCache * LRU = new LRUCache(3);
+	LFUCache * LFU = new LFUCache(3);
+
+	for (int i = 0; i < 10; i++) {
+		int key, value;
+		std::cout << "Enter Key" << std::endl;
+		std::cin >> key;
+		std::cout << "Enter Value" << std::endl;
+		std::cin >> value;
+		LRU->set(key, value);
+		LFU->set(key, value);
+		LRU->print_content();
+		LFU->print_content();
+	}
+
+	
 	int matrix[SPIRAL_MATRIX_ROW][SPIRAL_MATRIX_COL];
 
 	for (int i = 0; i < SPIRAL_MATRIX_ROW; i++) {
@@ -19,7 +80,7 @@ int main(void) {
 	std::cout << "Algorithm " << std::endl;
 
 	spiral_traverse_matrix(matrix);
-	/*
+	
 	int chessBoard[CHESS_EDGE][CHESS_EDGE];
 	for (int i = 0; i < CHESS_EDGE; i++) {
 		for (int j = 0; j < CHESS_EDGE; j++) {
