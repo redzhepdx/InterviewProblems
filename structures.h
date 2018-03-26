@@ -13,6 +13,37 @@
 #include <stack>
 #include <queue>
 #include <ctime>
+#include <iterator> 
+
+//Binary search for the find upper bound
+//List must be sorted
+template<typename T>
+int find_upper_bound(std::vector<T> list, int low, int high, int value) {
+	while (high - low > 1) {
+		//Middle index
+		int mid = low + (high - low) / 2;
+		//update newer bounds with using middle indexed element
+		if (list[mid] > value) {
+			high = mid;
+		}
+		else {
+			low = mid;
+		}
+	}
+	return high;
+}
+
+template<typename T>
+int length_of_array(T array[]) {
+	return sizeof(array) / sizeof(T);
+}
+
+template<typename T>
+void initialize_vector(std::vector<T>& list, T array[], int size) {
+	for (int i = 0; i < size; i++) {
+		list.push_back(array[i]);
+	}
+}
 
 std::vector<std::vector<int>> generateZeroMatrix(int rows, int cols) {
 	std::vector<std::vector<int>> matrix(rows);
