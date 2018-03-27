@@ -6,6 +6,23 @@
 
 
 int main(void) {
+	
+	exp_node * root             = new exp_node('a');
+	root->left                  = new exp_node('b');
+	root->right                 = new exp_node('c');
+	root->left->left            = new exp_node('d');
+	root->left->right           = new exp_node('e');
+	root->right->left           = new exp_node('f');
+	//root->right->right            = new exp_node('g');
+	//root->right->right->left  = new exp_node('h');
+	//root->right->right->right = new exp_node('i');
+	ExpressionTree * b_tree     = new ExpressionTree(root);
+	b_tree->print_b_tree(root);
+	std::cout << std::endl;
+	invert_binary_tree(root);
+	b_tree->print_b_tree(root);
+
+	/*
 	int array[] = { 0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15 };
 	std::vector<int> list;
 	std::vector<int> curr_list;
@@ -13,7 +30,7 @@ int main(void) {
 	//std::cout << list.size() << std::endl;
 	int longest_sequence_len = find_longest_increasing_subsequence_length(list);
 	std::cout << "longest sub sequence length : " << longest_sequence_len << std::endl;
-	/*
+	
 	int N = 12, X = 12;
 	int counter = find_number_in_mult_matrix(N, X);
 	std::cout << X << " appears in matrix for " << counter << " times." << std::endl;
