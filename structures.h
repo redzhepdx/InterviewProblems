@@ -302,6 +302,14 @@ public:
 
 	int getResultOfTree(exp_node *node);
 	int computeSubTree(exp_node *node, int left_value, int right_value);
+	void print_b_tree(exp_node * root){
+		std::cout << root->expression << " ";
+		if(root->left)
+		    print_b_tree(root->left);
+		if(root->right)
+		    print_b_tree(root->right);
+    	}
+
 
 public:
 	exp_node * root;
