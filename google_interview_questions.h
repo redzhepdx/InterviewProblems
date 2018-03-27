@@ -612,12 +612,14 @@ Node * reverse_it_in_place(Node * head) {
 	}
 	else {
 		first->next = NULL;
+		
 		while (third->next) {
 			second->next = first;
 			first = second;
 			second = third;
 			third = third->next;
 		}
+		
 		third->next = second;
 		second->next = first;
 	}
