@@ -105,3 +105,39 @@ int find_longest_increasing_subsequence_length(std::vector<T> list) {
 	return length;
 }
 /***************************************LONGEST_INCREASING_SUBSEQUENCE************************************************/
+
+
+/**************************************FIND_ISLAND_COUNT_IN_MATRIX****************************************************/
+
+bool isInIsland(int row, int col) {
+	return row >= 0 && col >= 0 && row < MTR_SIZE && col < MTR_SIZE;
+}
+
+void capture_island(int(&matrix)[MTR_SIZE][MTR_SIZE], int row, int col) {
+	matrix[row][col] = 0;
+	for (int n_x = -1; n_x <= 1; n_x++) {
+		for (int n_y = -1; n_y <= 1; n_y++) {
+			int next_x = row + n_x;
+			int next_y = col + n_y;
+			if (isInIsland(next_x, next_y) && matrix[next_x][next_y] && (n_x != 0 || n_y != 0)) {
+				capture_island(matrix, next_x, next_y);
+			}	
+		}
+	}
+}
+
+int count_islands(int (&matrix)[MTR_SIZE][MTR_SIZE]) {
+	int island_count = 0;
+	for (int i = 0; i < MTR_SIZE; i++) {
+		for (int j = 0; j < MTR_SIZE; j++) {
+			if (matrix[i][j]) {
+				capture_island(matrix, i, j);
+				island_count++;
+				//print_matrix(matrix);
+				//getchar();
+			}
+		}
+	}
+	return island_count;
+}
+/*********************************************************************************************************************/
