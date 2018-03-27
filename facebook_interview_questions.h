@@ -72,3 +72,26 @@ int max_product(std::vector<int> list){
 
 }
 /***************************************MAX_TRIPLET_PRODUCT******************************/
+
+/***************************************INVERT_BINARY_TREE*******************************/
+template<typename T>
+T* invert_binary_tree(T * root){
+    //Base Cases
+    if(root == NULL){
+        return NULL;
+    }
+
+    if(root->left == NULL and root->right == NULL){
+        return root;
+    }
+
+    //Recursion Case
+    T* right    = invert_binary_tree(root->left);
+    T* left     = invert_binary_tree(root->right);
+
+    //Inversion
+    root->left  = (left) ? left : NULL;
+    root->right = (right) ? right : NULL;
+    return root;
+}
+/***************************************INVERT_BINARY_TREE*******************************/
