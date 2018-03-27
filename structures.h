@@ -15,6 +15,21 @@
 #include <ctime>
 #include <iterator> 
 
+#ifndef MTR_SIZE
+#define MTR_SIZE 6
+#endif
+
+template<typename T>
+void print_matrix(T matrix[MTR_SIZE][MTR_SIZE]) {
+	for (int i = 0; i < MTR_SIZE; i++) {
+		for (int j = 0; j < MTR_SIZE; j++) {
+			std::cout << matrix[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
+
 //Binary search for the find upper bound
 //List must be sorted
 template<typename T>
