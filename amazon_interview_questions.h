@@ -159,3 +159,25 @@ int find_number_in_mult_matrix(int N, int X) {
 	return count;
 }
 /************************************************FIND_NUM_IN_MULT_MATRIX****************************************************************/
+/***********************************************WRONG_PARACENTESIS_COUNTING*************************************************************/
+/*
+Task : Find number of wrong pharantesi
+*/
+int numberOfWrongParacentesis(std::string s) {
+	std::stack<char> st;
+	int wrong_count = 0;
+	for (int i = 0; i < s.length(); i++) {
+		if (s[i] == '(') {
+			st.push(s[i]);
+			
+		}
+		else if(st.empty()) {
+			wrong_count++;
+		}
+		else {
+			st.pop();
+		}
+	}
+	return wrong_count + st.size();
+}
+/***********************************************WRONG_PARACENTESIS_COUNTING*************************************************************/
