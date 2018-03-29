@@ -9,7 +9,7 @@ int main(void) {
 	
 	std::string s = "(()()()()))";
 	int wrong_ph_count = numberOfWrongParacentesis(s);
-	std::cout << "Wrong Pharantesis Count : " << wrong_ph_count << std::endl;
+	std::cout << "Wrong Pharacentesis Count : " << wrong_ph_count << std::endl;
 	/*
 	exp_node * root             = new exp_node('a');
 	root->left                  = new exp_node('b');
