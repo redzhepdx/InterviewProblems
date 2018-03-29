@@ -14,6 +14,7 @@
 #include <queue>
 #include <ctime>
 #include <iterator> 
+#include <stack>
 
 #ifndef MTR_SIZE
 #define MTR_SIZE 6
