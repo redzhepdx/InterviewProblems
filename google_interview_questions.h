@@ -1,6 +1,60 @@
 #pragma once
 #include "structures.h"
 
+/*************************************************MERGE K-SORTED LISTS******************************************************************/
+//The List and Inner Index Tracker Class
+template <typename T>
+typedef class Tracker{
+public:
+    Tracker(){};
+    Tracker(T value, int list_index,int index){
+        this->value      = value;
+        this->list_index = list_index;
+        this->index      = index;
+    }
+
+    bool operator>(const T& other){ return this->value > other->value;}
+
+public:
+    T value;
+    int list_index;
+    int index;
+}
+
+template <typename T>
+std::vector<Tracker<T>>> create_container(std::vector<std::vector<T>> lists){
+    std::vector<Tracker<T>> container;
+    for(int i = 0; i < lists.size(); i++){
+        Tracker<T> newTracker(lists[i][0], i, 0);
+        container.push_back(newTracker);
+    }
+    return container;
+}
+
+template <typename T>
+std::vector<T> merge_lists(std::vector<std::vector<T>> lists){
+    std::vector<T> merged;
+    std::vector<Tracker<T>> container = create_container(lists);
+    std::priority_queue<Tracker<T>, std::vector<T>, std::greater<T>> pq;
+
+    for(unsigned int i = 0; i < lists.size(); i++){
+        pq.push(container[i]);
+    }
+
+    while(pq.top()){
+        Tracker<T> curr = pq.top();//Get Minimum Value From Min-Heap
+        pq.pop();//Pop min element
+        merged.push_back(curr.value);//Put It to Merged List
+        //If popped element's list still contains elements , push next item to Min-Heap
+        if ((curr.index + 1) < lists[curr.list_index].size()){
+            container[curr.list_index].value = lists[curr.list_index][curr.index + 1];//Update Value
+            container[curr.list_index].index++;//Update Inner List Index
+            pq.push(container[curr.list_index]);//Push it to Min Heap
+        }
+    }
+    return merged;
+}
+/*************************************************MERGE K-SORTED LISTS******************************************************************/
 
 /***************************************************R-G-B SORTING***********************************************************************/
 std::vector<char> organizeArray(std::vector<char> rgbList) {
