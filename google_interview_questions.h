@@ -1,10 +1,10 @@
 #pragma once
 #include "structures.h"
 
-/*************************************************MERGE K-SORTED LISTS******************************************************************/
+/***********************************************MERGE K-SORTED LISTS********************************************************************/
 //The List and Inner Index Tracker Class
 template <typename T>
-typedef class Tracker{
+class Tracker{
 public:
     Tracker(){};
     Tracker(T value, int list_index,int index){
@@ -19,10 +19,10 @@ public:
     T value;
     int list_index;
     int index;
-}
+};
 
 template <typename T>
-std::vector<Tracker<T>>> create_container(std::vector<std::vector<T>> lists){
+std::vector<Tracker<T>> create_container(std::vector<std::vector<T>> lists){
     std::vector<Tracker<T>> container;
     for(int i = 0; i < lists.size(); i++){
         Tracker<T> newTracker(lists[i][0], i, 0);
@@ -54,8 +54,7 @@ std::vector<T> merge_lists(std::vector<std::vector<T>> lists){
     }
     return merged;
 }
-/*************************************************MERGE K-SORTED LISTS******************************************************************/
-
+/***********************************************MERGE K-SORTED LISTS********************************************************************/
 /***************************************************R-G-B SORTING***********************************************************************/
 std::vector<char> organizeArray(std::vector<char> rgbList) {
 	std::vector<char> organizedArray;
