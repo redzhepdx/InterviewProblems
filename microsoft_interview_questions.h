@@ -141,3 +141,27 @@ int count_islands(int (&matrix)[MTR_SIZE][MTR_SIZE]) {
 	return island_count;
 }
 /*********************************************************************************************************************/
+/********************************************LONGEST CONSECUTIVE SEQUENCE*********************************************/
+template <typename T>
+int findMaxConsSequence(std::vector<T> list){
+    int max = 0;
+    std::unordered_map<T, bool> hashT;
+    for(int i = 0; i < list.size(); i++){
+        hashT[list[i]] = true;
+    }
+
+    for(int i = 0; i < list.size(); i++){
+        //If we couldn't see this element before
+        if(!hashT.count(list[i] - 1)) {
+            //Pick it as start of sequence and look next values after this
+            int index = list[i];
+            while(hashT.count(index + 1)){
+                index += 1;
+            }
+            int size = index - list[i] + 1;
+            max = (max < size) ? size : max;
+        }
+    }
+    return max;
+}
+/**********************************************LONGEST CONSECUTIVE SEQUENCE****************************************/
