@@ -1,6 +1,57 @@
 #pragma once
 #include "structures.h"
 
+/*********************************************MOVE_IN_GRID_FASTEST_WAY******************************************************************/
+/*
+Explanation : 
+You are in an infinite 2D grid where you can move in any of the 8 directions:
+
+ (x,y) to
+	(x+1, y),
+	(x - 1, y),
+	(x, y+1),
+	(x, y-1),
+	(x-1, y-1),
+	(x+1,y+1),
+	(x-1,y+1),
+	(x+1,y-1)
+You are given a sequence of points and the order in which you need to cover the points.
+Give the minimum number of steps in which you can achieve it. You start from the first point.
+Example:
+
+Input: [(0, 0), (1, 1), (1, 2)]
+Output: 2
+*/
+int compute_relative_min_movement_count(int row, int col) {
+	int bigger = row, smaller = col;
+	if (row < col) {
+		bigger  = col;
+		smaller = row;
+	}
+	return (bigger - smaller) + smaller;
+}
+
+std::pair<int, int> convertToRelative(std::pair<int, int> curr, std::pair<int, int> target) {
+	std::pair<int, int> relative;
+	relative.first = std::abs(curr.first - target.first);
+	relative.second = std::abs(curr.second - target.second);
+	return relative;
+}
+
+int minMoveCount(std::vector<std::pair<int, int>> path) {
+	std::pair<int, int> curr = path[0];
+	int total_move_count     = 0;
+
+	for (int i = 1; i < path.size(); i++) {
+		std::pair<int, int> relative = convertToRelative(curr, path[i]);
+		total_move_count += compute_relative_min_movement_count(relative.first, relative.second);
+		curr = path[i];
+	}
+
+	return total_move_count;
+}
+/*********************************************MOVE_IN_GRID_FASTEST_WAY******************************************************************/
+
 /***********************************************MERGE K-SORTED LISTS********************************************************************/
 //The List and Inner Index Tracker Class
 template <typename T>
