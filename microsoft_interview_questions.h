@@ -165,3 +165,49 @@ int findMaxConsSequence(std::vector<T> list){
     return max;
 }
 /**********************************************LONGEST CONSECUTIVE SEQUENCE****************************************/
+/***********************************************COIN_COLLECTING_IN_GRID********************************************/
+/*
+You are given a 2-d matrix where each cell represents number of coins in that cell. Assuming we start at matrix[0][0], and can only move right or down, find the maximum number of coins you can collect by the bottom right corner.
+
+For example, in this matrix
+
+0 3 1 1
+2 0 0 4
+1 5 3 1
+The most we can collect is 0 + 2 + 1 + 5 + 3 + 1 = 12 coins.
+*/
+
+int mostCollectableCoinCount(std::vector<std::vector<int>> matrix ) {
+	std::vector<std::vector<int>> value_matrix(matrix.size(), std::vector<int>(matrix[0].size(), 0));
+	int max_val;
+	value_matrix[0][0] = matrix[0][0];
+
+	for (int row = 1; row < matrix.size(); row++) {
+		value_matrix[row][0] += value_matrix[row - 1][0] + matrix[row][0];
+	}
+
+	for (int col = 1; col < matrix[0].size(); col++) {
+		value_matrix[0][col] += value_matrix[0][col - 1] + matrix[0][col];
+	}
+	
+
+	for (int row = 1; row < matrix.size(); row++) {
+		for (int col = 1; col < matrix[row].size(); col++) {
+			int max_top  = value_matrix[row - 1][col] + matrix[row][col];
+			int max_left = value_matrix[row][col - 1] + matrix[row][col];
+			value_matrix[row][col] = (max_top > max_left) ? max_top : max_left;
+		}
+	}
+	for (int row = 0; row < matrix.size(); row++) {
+		for (int col = 0; col < matrix[row].size(); col++) {
+			std::cout << value_matrix[row][col] << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	return value_matrix[matrix.size() - 1][matrix[0].size() - 1];
+
+}
+
+/***********************************************COIN_COLLECTING_IN_GRID********************************************/
+
