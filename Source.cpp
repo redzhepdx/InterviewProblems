@@ -6,11 +6,27 @@
 
 
 int main(void) {
-	
+	std::vector<std::vector<int>> matrix;
+	std::vector<int> list_1, list_2, list_3, list_4;
+	int arr_1[MTR_SIZE] = { 2, 3, 1, 1 };
+	int arr_2[MTR_SIZE] = { 2, 0, 0, +15 };
+	int arr_3[MTR_SIZE] = { 1, 5, 3, -5 };
+	int arr_4[MTR_SIZE] = { 0, 0, 2, 0 };
+	initialize_vector(list_1, arr_1, MTR_SIZE);
+	initialize_vector(list_2, arr_2, MTR_SIZE);
+	initialize_vector(list_3, arr_3, MTR_SIZE);
+	initialize_vector(list_4, arr_4, MTR_SIZE);
+	matrix.push_back(list_1);
+	matrix.push_back(list_2);
+	matrix.push_back(list_3);
+	matrix.push_back(list_4);
+	int mostCoinVal = mostCollectableCoinCount(matrix);
+	std::cout << "Max Coin Value : " << mostCoinVal << std::endl;
+	/*
 	std::string s = "(()()()()))";
 	int wrong_ph_count = numberOfWrongParacentesis(s);
 	std::cout << "Wrong Pharacentesis Count : " << wrong_ph_count << std::endl;
-	/*
+	
 	exp_node * root             = new exp_node('a');
 	root->left                  = new exp_node('b');
 	root->right                 = new exp_node('c');
