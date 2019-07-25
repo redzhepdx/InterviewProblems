@@ -2,7 +2,10 @@
 #include <vector>
 #include <memory>
 #include <limits>
+#include <numeric>
 #include <algorithm>
+#include <unordered_map>
+#include <set>
 
 class Image{
 public:
@@ -44,6 +47,7 @@ public:
     std::unique_ptr<Image> sortImage(std::unique_ptr<Image>& shuffledImage) const;
     std::unique_ptr<Image> createRandomImage(const unsigned int rows, const unsigned int cols) const;
     unsigned int getNumberOfPartitions(std::unique_ptr<Image>& shuffledImage) const;
+    unsigned int getPartitionOrder(std::unique_ptr<Image>& shuffledImage, unsigned int partition_count, unsigned int partition_size) const;
 
 private:
     unsigned int partition_count;
@@ -122,14 +126,82 @@ unsigned int Partitioner::getNumberOfPartitions(std::unique_ptr<Image>& shuffled
         }
     }
 
-    return shuffleImage->cols / partition_count;
+    return shuffledImage->cols / partition_count;
+}
+
+unsigned int Partitioner::getPartitionOrder(std::unique_ptr<Image>& shuffledImage, unsigned int partition_count, unsigned int partition_size) const{
+    std::vector<std::vector<int>> left_right_diff(partition_count, std::vector<int>(partition_count, std::numeric_limits<int>::max()));
+    std::unordered_map<int, bool> partitions;
+    std::set<int>                 partition_occ;
+    std::vector<int>              ordered_partitions;
+    
+    int head_dist            = std::numeric_limits<int>::min();
+    int head_partition_index = 0;
+
+    // Find the first partition
+    // Compare the leftmost pixels of current partition with the all other partitions' rightmost pixels
+    // For each partition find closest other partition that can be next to current partition and also store the differences
+    // Find the maximum difference and index of maximum difference is the first partition of shuffled image
+    for(unsigned int p_x = 0; p_x < partition_count; ++p_x){
+        int local_min = std::numeric_limits<int>::max();
+        partition_occ.insert(p_x);
+        partitions[p_x] = true;
+        
+        for(unsigned int p_y = 0; p_y < partition_count; ++p_y){
+            if( p_x != p_y ){
+                int total_diff = 0;
+                
+                for(unsigned int row = 0; row < shuffledImage->rows; ++row){
+                    int diff = (int)shuffledImage->getPixel(row, p_x * partition_size) - (int)shuffledImage->getPixel(row, p_y * partition_size);
+                    total_diff += (diff * diff);
+                }
+                
+                if(total_diff < local_min){
+                    local_min = total_diff;
+                }
+
+                left_right_diff[p_x][p_y] = total_diff;
+            }
+        }
+
+        if(local_min > head_dist){
+            head_dist = local_min;
+            head_partition_index = p_x;
+        }
+    }
+
+    std::cout << "head partition index : " << head_partition_index << std::endl;
+
+    // Sort the all other partitions
+    while(!partition_occ.empty()){
+        partitions[head_partition_index] = false;
+        ordered_partitions.push_back(head_partition_index);
+        partition_occ.erase(head_partition_index);
+        
+        int current_min = std::numeric_limits<int>::max();
+
+        for(unsigned int row = 0; row < partition_count; ++row){
+            if(left_right_diff[head_partition_index][row] <= current_min && partitions[row]){
+                current_min = left_right_diff[head_partition_index][row];
+                head_partition_index = row; 
+            }
+        }
+    }
+    
+    std::cout << "\nORDERED : " << std::endl;
+    for(int i = 0; i < ordered_partitions.size(); ++i){
+        std::cout << ordered_partitions[i] << " ";
+    } 
+    std::cout << std::endl;
 }
 
 std::unique_ptr<Image> Partitioner::sortImage(std::unique_ptr<Image>& shuffledImage) const{
     std::unique_ptr<Image> sortedImage = std::make_unique<Image>(shuffledImage->rows, shuffledImage->cols);
-    unsigned int partition_count = this->getNumberOfPartitions(shuffledImage);
+    unsigned int partition_count       = this->getNumberOfPartitions(shuffledImage);
+    unsigned int head_index            = this->getPartitionOrder(shuffledImage, partition_count, shuffledImage->cols / partition_count);
+
     std::cout << "Number of partitions : " << partition_count << std::endl;
-    // TODO : IN PROGRESS
+    
     return sortedImage;
 }
 
