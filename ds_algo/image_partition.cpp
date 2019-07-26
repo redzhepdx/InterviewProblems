@@ -47,7 +47,7 @@ public:
     std::unique_ptr<Image> sortImage(std::unique_ptr<Image>& shuffledImage) const;
     std::unique_ptr<Image> createRandomImage(const unsigned int rows, const unsigned int cols) const;
     unsigned int getNumberOfPartitions(std::unique_ptr<Image>& shuffledImage) const;
-    unsigned int getPartitionOrder(std::unique_ptr<Image>& shuffledImage, unsigned int partition_count, unsigned int partition_size) const;
+    std::vector<unsigned int> getPartitionOrder(std::unique_ptr<Image>& shuffledImage, unsigned int partition_count, unsigned int partition_size) const;
 
 private:
     unsigned int partition_count;
@@ -129,11 +129,11 @@ unsigned int Partitioner::getNumberOfPartitions(std::unique_ptr<Image>& shuffled
     return shuffledImage->cols / partition_count;
 }
 
-unsigned int Partitioner::getPartitionOrder(std::unique_ptr<Image>& shuffledImage, unsigned int partition_count, unsigned int partition_size) const{
-    std::vector<std::vector<int>> left_right_diff(partition_count, std::vector<int>(partition_count, std::numeric_limits<int>::max()));
+std::vector<unsigned int> Partitioner::getPartitionOrder(std::unique_ptr<Image>& shuffledImage, unsigned int partition_count, unsigned int partition_size) const{
+    std::vector<std::vector<int>> left_right_diff(partition_count, std::vector<int>(partition_count, 1000));
     std::unordered_map<int, bool> partitions;
     std::set<int>                 partition_occ;
-    std::vector<int>              ordered_partitions;
+    std::vector<unsigned int>     ordered_partitions;
     
     int head_dist            = std::numeric_limits<int>::min();
     int head_partition_index = 0;
@@ -178,11 +178,12 @@ unsigned int Partitioner::getPartitionOrder(std::unique_ptr<Image>& shuffledImag
         ordered_partitions.push_back(head_partition_index);
         partition_occ.erase(head_partition_index);
         
-        int current_min = std::numeric_limits<int>::max();
+        unsigned int current_min = std::numeric_limits<int>::max();
+        unsigned int currentHead = head_partition_index;
 
         for(unsigned int row = 0; row < partition_count; ++row){
-            if(left_right_diff[head_partition_index][row] <= current_min && partitions[row]){
-                current_min = left_right_diff[head_partition_index][row];
+            if(left_right_diff[row][currentHead] <= current_min && partitions[row]){
+                current_min = left_right_diff[row][currentHead];
                 head_partition_index = row; 
             }
         }
@@ -193,14 +194,24 @@ unsigned int Partitioner::getPartitionOrder(std::unique_ptr<Image>& shuffledImag
         std::cout << ordered_partitions[i] << " ";
     } 
     std::cout << std::endl;
+
+    return ordered_partitions;
 }
 
 std::unique_ptr<Image> Partitioner::sortImage(std::unique_ptr<Image>& shuffledImage) const{
-    std::unique_ptr<Image> sortedImage = std::make_unique<Image>(shuffledImage->rows, shuffledImage->cols);
-    unsigned int partition_count       = this->getNumberOfPartitions(shuffledImage);
-    unsigned int head_index            = this->getPartitionOrder(shuffledImage, partition_count, shuffledImage->cols / partition_count);
+    std::unique_ptr<Image> sortedImage            = std::make_unique<Image>(shuffledImage->rows, shuffledImage->cols);
+    unsigned int partition_count                  = this->getNumberOfPartitions(shuffledImage);
+    unsigned int partition_size                   = shuffledImage->cols / partition_count;
+    std::vector<unsigned int> oredered_partitions = this->getPartitionOrder(shuffledImage, partition_count, partition_size);
 
-    std::cout << "Number of partitions : " << partition_count << std::endl;
+
+    for(unsigned int row = 0; row < shuffledImage->rows; ++row){
+        for(unsigned int col = 0; col < shuffledImage->cols; ++col){
+            unsigned int value   = (unsigned int)(col / partition_size);
+            unsigned int new_col = oredered_partitions[value] * partition_size + col % partition_size;
+            sortedImage->setPixel(row, new_col, shuffledImage->getPixel(row, col));
+        }
+    }
     
     return sortedImage;
 }
