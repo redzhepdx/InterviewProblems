@@ -7,6 +7,13 @@
 #include <unordered_map>
 #include <set>
 
+#define OPENCV
+
+#ifdef OPENCV
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#endif
+
 /*  Problem : Imagine you have a random image that partitioned 
                  vertically to N parts and those parts shuffled randomly. 
     Task : Can you re-assemble(sort the partitions in correct order) image from shuffled form?
@@ -20,6 +27,16 @@
 
 class Image{
 public:
+    Image(cv::Mat image){
+        this->rows = image.rows;
+        this->cols = image.cols;
+
+        this->data.resize(rows * cols);
+
+        if (image.isContinuous())
+            this->data.assign((uchar*)image.datastart, (uchar*)image.dataend);
+    }
+
     Image(unsigned int rows, unsigned int cols){
         this->rows = rows;
         this->cols = cols;
@@ -44,7 +61,7 @@ public:
     }
 
 public:
-    std::vector<unsigned int> data;
+    std::vector<uchar> data;
     unsigned int rows;
     unsigned int cols;
 };
@@ -228,10 +245,15 @@ std::unique_ptr<Image> Partitioner::sortImage(std::unique_ptr<Image>& shuffledIm
 }
 
 int main(void){
-   
-    std::unique_ptr<Partitioner> partitioner = std::make_unique<Partitioner>(5);
+    std::cout << "Enter the name of the image " << std::endl;
+    std::string image_name;
+    std::cin >> image_name;
     
-    std::unique_ptr<Image> image = partitioner->createRandomImage(30, 30);
+    std::unique_ptr<Partitioner> partitioner = std::make_unique<Partitioner>(5);
+  
+    // std::unique_ptr<Image> image = partitioner->createRandomImage(30, 30);
+    cv::Mat img = cv::imread(image_name, cv::IMREAD_GRAYSCALE);
+    std::unique_ptr<Image> image = std::make_unique<Image>(img);
 
     image->print();
     std::cout << std::endl;
