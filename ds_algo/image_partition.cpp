@@ -7,6 +7,17 @@
 #include <unordered_map>
 #include <set>
 
+/*  Problem : Imagine you have a random image that partitioned 
+                 vertically to N parts and those parts shuffled randomly. 
+    Task : Can you re-assemble(sort the partitions in correct order) image from shuffled form?
+    W : width of the image
+    H : height of the image
+    Image[W*H] : grayscale image
+    Note1 : You don't know the 'N' and you don't know the 'width' of all partitions
+    Note2 : Note : Any partition line cannot intersect any pixel 
+    Note3 : Width of partitions are the same.
+*/
+
 class Image{
 public:
     Image(unsigned int rows, unsigned int cols){
