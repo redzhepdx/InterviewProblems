@@ -7,9 +7,13 @@
 #include <unordered_map>
 #include <set>
 
+#include <stdlib.h>
+#include <time.h>
+
 #define OPENCV
 
 #ifdef OPENCV
+#include "opencv2/opencv.hpp"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #endif
@@ -54,7 +58,7 @@ public:
     void print(){
         for(unsigned int row = 0; row < this->rows; ++row){
             for(unsigned int col = 0; col < this->cols; ++col){
-                std::cout << this->data[row * this->cols + col] << " ";
+                std::cout << (unsigned int) this->data[row * this->cols + col] << " ";
             }
             std::cout << std::endl;
         }
@@ -90,6 +94,7 @@ std::unique_ptr<Image> Partitioner::createRandomImage(const unsigned int rows, c
         
         for(unsigned int row = 0; row < rows; ++row){
             for(unsigned int col = 0; col < cols; ++col){
+                // unsigned int value = rand() % 10; //
                 unsigned int value = (unsigned int)(col / partition_size);
                 image->setPixel(row, col, value);
             }
@@ -129,24 +134,39 @@ std::unique_ptr<Image> Partitioner::shuffleImage(std::unique_ptr<Image>& image) 
 
 unsigned int Partitioner::getNumberOfPartitions(std::unique_ptr<Image>& shuffledImage) const{
     int partition_count = 0;
-    float best_average  = -9999;
-
-    for(unsigned int divisor = 2; divisor <= shuffledImage->cols / 2; ++divisor){
-        if(shuffledImage->cols % divisor == 0){
-            unsigned int currPartitionCount = shuffledImage->cols / divisor;
+    float best_average  = std::numeric_limits<float>::min();
+    
+    for(unsigned int possible_width = 2; possible_width <= shuffledImage->cols / 2; ++possible_width){
+        if(shuffledImage->cols % possible_width == 0){
+            unsigned int currPartitionCount = shuffledImage->cols / possible_width;
             
             std::vector<unsigned long> total_diffs;
             
             for(unsigned int line = 1; line < currPartitionCount; ++line){
                 unsigned long line_diff = 0;
                 for(unsigned int row = 0; row < shuffledImage->rows; ++row){
-                    int pixel_diff = (int)shuffledImage->getPixel(row, line * divisor) - (int)shuffledImage->getPixel(row, line * divisor + 1);
-                    line_diff += (unsigned int)(pixel_diff * pixel_diff);
+                    int pixel_diff = (int)shuffledImage->getPixel(row, line * possible_width - 1) - 
+                                     (int)shuffledImage->getPixel(row, line * possible_width);
+                    line_diff += (unsigned long)(pixel_diff * pixel_diff);
+
+                    // std::cout << (int)shuffledImage->getPixel(row, line * possible_width - 1) << " , " << (int)shuffledImage->getPixel(row, line * possible_width) << std::endl;
+                    // std::cout << "pixel diff : " << pixel_diff << std::endl;
+                    // std::cout << "line diff : " << line_diff << std::endl;
+                    
                 }
                 total_diffs.push_back(line_diff);
+                // std::cout << "New Line" << std::endl;
+                // getchar();
             }
 
+            
             float currentAverage = std::accumulate(total_diffs.begin(), total_diffs.end(), 0.0) / total_diffs.size();
+            
+            std::cout << "Width : " << possible_width << " Avg : " <<  currentAverage << std::endl;
+            for(int i = 0; i < total_diffs.size(); ++i)
+                std::cout << total_diffs[i] << " ";
+            std::cout << std::endl;
+            
             if (currentAverage > best_average){
                 best_average    = currentAverage;
                 partition_count = currPartitionCount;
@@ -154,7 +174,7 @@ unsigned int Partitioner::getNumberOfPartitions(std::unique_ptr<Image>& shuffled
         }
     }
 
-    return shuffledImage->cols / partition_count;
+    return partition_count;
 }
 
 std::vector<unsigned int> Partitioner::getPartitionOrder(std::unique_ptr<Image>& shuffledImage, unsigned int partition_count, unsigned int partition_size) const{
@@ -175,13 +195,13 @@ std::vector<unsigned int> Partitioner::getPartitionOrder(std::unique_ptr<Image>&
         partition_occ.insert(p_x);
         partitions[p_x] = true;
         
-        for(unsigned int p_y = 0; p_y < partition_count; ++p_y){
+        for(unsigned int p_y = 1; p_y < partition_count; ++p_y){
             if( p_x != p_y ){
                 int total_diff = 0;
                 
                 for(unsigned int row = 0; row < shuffledImage->rows; ++row){
-                    int diff = (int)shuffledImage->getPixel(row, p_x * partition_size) - (int)shuffledImage->getPixel(row, p_y * partition_size);
-                    total_diff += (diff * diff);
+                    int diff = (int)shuffledImage->getPixel(row, p_x * partition_size) - (int)shuffledImage->getPixel(row, p_y * partition_size - 1);
+                    total_diff += std::pow(diff, 2);
                 }
                 
                 if(total_diff < local_min){
@@ -232,6 +252,7 @@ std::unique_ptr<Image> Partitioner::sortImage(std::unique_ptr<Image>& shuffledIm
     unsigned int partition_size                   = shuffledImage->cols / partition_count;
     std::vector<unsigned int> oredered_partitions = this->getPartitionOrder(shuffledImage, partition_count, partition_size);
 
+    std::cout << "Partition Count : " << partition_count << std::endl;
 
     for(unsigned int row = 0; row < shuffledImage->rows; ++row){
         for(unsigned int col = 0; col < shuffledImage->cols; ++col){
@@ -245,24 +266,48 @@ std::unique_ptr<Image> Partitioner::sortImage(std::unique_ptr<Image>& shuffledIm
 }
 
 int main(void){
-    std::cout << "Enter the name of the image " << std::endl;
-    std::string image_name;
-    std::cin >> image_name;
+
+    std::unique_ptr<Partitioner> partitioner = std::make_unique<Partitioner>(15);
     
-    std::unique_ptr<Partitioner> partitioner = std::make_unique<Partitioner>(5);
-  
-    // std::unique_ptr<Image> image = partitioner->createRandomImage(30, 30);
-    cv::Mat img = cv::imread(image_name, cv::IMREAD_GRAYSCALE);
-    std::unique_ptr<Image> image = std::make_unique<Image>(img);
+    if(true){
+        std::cout << "Enter the name of the image " << std::endl;
+        std::string image_name;
+        std::cin >> image_name;
 
-    image->print();
-    std::cout << std::endl;
+        cv::Mat img = cv::imread(image_name, cv::IMREAD_GRAYSCALE);
+        //cv::resize(img, img, cv::Size(100, 100), 0, 0);
+        
 
-    std::unique_ptr<Image> shuffled_image = std::move(partitioner->shuffleImage(image));
-    shuffled_image->print();
+        std::unique_ptr<Image> image = std::make_unique<Image>(img);
+        std::unique_ptr<Image> shuffled_image = std::move(partitioner->shuffleImage(image));
+        cv::Mat shuffled_mat(shuffled_image->rows, shuffled_image->cols, CV_8UC1);
+        memcpy(shuffled_mat.data, shuffled_image->data.data(), shuffled_image->data.size() * sizeof(uchar));
+        
 
-    std::unique_ptr<Image> sorted_image = std::move(partitioner->sortImage(shuffled_image));
-    sorted_image->print();
+        std::unique_ptr<Image> sorted_image = std::move(partitioner->sortImage(shuffled_image));
+        cv::Mat sorted_cv(sorted_image->rows, sorted_image->cols, CV_8UC1);
+        memcpy(sorted_cv.data, sorted_image->data.data(), sorted_image->data.size() * sizeof(uchar));
+
+        cv::imshow("Real Image", img);
+        cv::imshow("Shuffled Image", shuffled_mat);
+        cv::imwrite("shuffled.png", shuffled_mat);
+        cv::imshow("Sorted Image", sorted_cv);
+        cv::waitKey(0);
+        cv::destroyAllWindows();
+    }
+    else{
+        srand (time(NULL));
+
+        std::unique_ptr<Image> image = partitioner->createRandomImage(20, 20);
+        image->print();
+        std::cout << std::endl;
+
+        std::unique_ptr<Image> shuffled_image = std::move(partitioner->shuffleImage(image));
+        shuffled_image->print();
+
+        std::unique_ptr<Image> sorted_image = std::move(partitioner->sortImage(shuffled_image));
+        sorted_image->print();
+    }
 
     std::cout << "Done!!!" << std::endl;
 

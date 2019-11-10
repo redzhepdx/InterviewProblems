@@ -1,6 +1,43 @@
 #pragma once
 #include "structures.h"
 
+/*
+Maximum consecutive one’s in a binary form of number after turn one "0" to a "1"
+*/
+
+int get_longest_bit_stream_len(int number){
+    int max_streamlen = 0; 
+    int rem = 0;
+    int last_zero_index = 0;
+    int iteration = 1;
+    int counter = 1;
+
+    while (true){
+        int curr_number = (number >> iteration) << iteration;
+        // Zero found
+        if(curr_number == number){
+            std::cout << "Zero Found" << std::endl;
+            max_streamlen = std::max(max_streamlen, counter + rem);
+            rem = iteration - last_zero_index - 1; // Number of ones between two ones
+            last_zero_index = iteration; // Update last zero index
+            counter = 1; // Reset the counter
+        }
+        else{
+            counter++;
+        }
+        
+        if(number == 0){
+            max_streamlen = std::max(max_streamlen, counter + rem);
+            break;
+        }
+
+        ++iteration;
+        number = curr_number;
+    }
+
+    return max_streamlen;
+}
+
 /*********************************************MOVE_IN_GRID_FASTEST_WAY******************************************************************/
 /*
 Explanation : 
