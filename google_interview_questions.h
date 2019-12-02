@@ -2,6 +2,62 @@
 #include "structures.h"
 
 /*
+	Count All Complementary Pair Combinations in A List
+*/
+
+int find_all_complementary_pairs(int value, std::vector<int> list){
+    std::unordered_map<int, int> counters;
+
+    int total = 0;
+
+    for(int elem : list){
+        if(!counters.count(elem)){
+            counters[elem] = 0;
+        }
+        counters[elem]++;
+    }
+
+    for(int elem : list){
+        int complementary = value - elem;
+        if(counters.find(complementary) != counters.end()){
+            
+            if(complementary == elem){
+                total += (counters[elem] * (counters[elem] - 1));
+            }
+            else{
+                total += (2 * counters[elem] * counters[complementary]);
+            }
+            
+            counters.erase(elem);
+            counters.erase(complementary);
+        }
+    }
+
+    return total;
+}
+
+/*
+	Find minimum increasing/decreasing operation to make all elements of a list the same
+*/
+
+int make_all_vals_the_same(std::vector<int> list){
+    int max = -1;
+    int min = 9999999;
+
+    int type = list[0] % 2;
+    
+    for(auto elem : list){
+        if((elem % 2) != type){
+            return -1;
+        }
+        max = std::max(max, elem);
+        min = std::min(min, elem);
+    }
+
+    return (max - min) / 2;
+}
+
+/*
 Maximum consecutive one’s in a binary form of number after turn one "0" to a "1"
 */
 
