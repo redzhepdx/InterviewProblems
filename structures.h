@@ -15,6 +15,7 @@
 #include <ctime>
 #include <iterator> 
 #include <stack>
+#include <climits>
 
 #ifndef MTR_SIZE
 #define MTR_SIZE 6
