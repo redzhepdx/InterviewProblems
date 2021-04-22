@@ -20,8 +20,8 @@ int main(){
 
 		// Order prefix 1
 		for(int code_idx = 0; code_idx < current_len; ++code_idx){
-            gray_codes[code_idx] = "0" + gray_codes[code_idx];
-        }
+		    gray_codes[code_idx] = "0" + gray_codes[code_idx];
+		}
 	}
 
 	for(auto &s : gray_codes){
